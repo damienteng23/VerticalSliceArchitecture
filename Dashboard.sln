@@ -4,15 +4,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 18.3.11310.294 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.UI", "Dashboard.UI\Dashboard.UI.csproj", "{703AC86F-0092-4EED-B54E-E0E932ED0719}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74AE8FBA-DA65-4F94-ACB2-66246AA95F05} = {74AE8FBA-DA65-4F94-ACB2-66246AA95F05}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Domain", "Dashboard.Domain\Dashboard.Domain.csproj", "{7AA53EF3-090A-4C44-930A-8197F00718F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Infrastructure", "Dashboard.Infrastructure\Dashboard.Infrastructure.csproj", "{7E0C8C89-564F-4BC8-B465-E712C04F986C}"
 	ProjectSection(ProjectDependencies) = postProject
+		{74AE8FBA-DA65-4F94-ACB2-66246AA95F05} = {74AE8FBA-DA65-4F94-ACB2-66246AA95F05}
 		{7AA53EF3-090A-4C44-930A-8197F00718F2} = {7AA53EF3-090A-4C44-930A-8197F00718F2}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Application", "Dashboard.Application\Dashboard.Application.csproj", "{74AE8FBA-DA65-4F94-ACB2-66246AA95F05}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7AA53EF3-090A-4C44-930A-8197F00718F2} = {7AA53EF3-090A-4C44-930A-8197F00718F2}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Tests", "Dashboard.Tests\Dashboard.Tests.csproj", "{DDF5585D-3869-4965-BFDE-86F6C26753A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +81,18 @@ Global
 		{74AE8FBA-DA65-4F94-ACB2-66246AA95F05}.Release|x64.Build.0 = Release|Any CPU
 		{74AE8FBA-DA65-4F94-ACB2-66246AA95F05}.Release|x86.ActiveCfg = Release|Any CPU
 		{74AE8FBA-DA65-4F94-ACB2-66246AA95F05}.Release|x86.Build.0 = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Debug|x86.Build.0 = Debug|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|x64.Build.0 = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDF5585D-3869-4965-BFDE-86F6C26753A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
