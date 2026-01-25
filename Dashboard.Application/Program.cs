@@ -4,12 +4,12 @@ var config = builder.Configuration;
 #region Add services to the container.
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
+builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
+
 // for global exception handling
-// builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 #region AddScoped region for repository
@@ -36,8 +36,11 @@ if (app.Environment.IsDevelopment())
     //var dbContext = services.GetRequiredService<StoreDbContext>();
     //dbContext.Database.Migrate();
 
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+
+    // Automatically redirect to Scalar documentation
+    app.MapGet("/", () => Results.Redirect("/scalar"));
 }
 
 // for global exception handling - part 2
@@ -50,7 +53,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors("CorsPolicy");
-app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();

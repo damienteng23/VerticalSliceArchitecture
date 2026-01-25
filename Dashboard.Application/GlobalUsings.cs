@@ -5,3 +5,5 @@ global using System.Threading.Tasks;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Mvc;
 global using Dashboard.Domain.Exceptions;
+global using Scalar.AspNetCore;
+global using Dashboard.Application.Middleware;

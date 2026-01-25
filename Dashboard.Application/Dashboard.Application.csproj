@@ -8,12 +8,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.12.18" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Slice\Greeks\" />
     <Folder Include="Slice\Shared\" />
     <Folder Include="Slice\Pricing\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dashboard.Domain\Dashboard.Domain.csproj" />
   </ItemGroup>
 
 </Project>
