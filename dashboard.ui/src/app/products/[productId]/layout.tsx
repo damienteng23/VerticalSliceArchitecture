@@ -7,8 +7,8 @@ export default function ProductDetailLayout({
 }) {
   return (
     <>
+      <h1>product layout text</h1>
       {children}
-      <h2>Featured Product</h2>
     </>
   );
 }

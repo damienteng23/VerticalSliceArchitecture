@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default async function ProductDetails({
   params,
 }: {
@@ -5,5 +7,11 @@ export default async function ProductDetails({
 }) {
   const { productId } = await params;
 
-  return <h1>details about product {productId}</h1>;
+  return (
+    <>
+      <h1>details about product {productId}</h1>
+      <p>some details about the product_{productId}</p>
+      <Link href={`/products`}>/Back to Products</Link>
+    </>
+  );
 }
