@@ -38,22 +38,11 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: "flex" }}>
-        <AppBar 
-          position="fixed" 
-          sx={{ 
-            // 1. Set zIndex higher than the Drawer
-            zIndex: (theme) => theme.zIndex.drawer + 1, 
-            bgcolor: 'dashboard.header',
-            color: 'text.primary',
-            boxShadow: 'none',
-            borderBottom: '1px solid',
-            borderColor: 'divider'
-          }}
-        >
+        
+        <AppBar>
           <Toolbar>
             <IconButton
               color="inherit"
-              edge="start"
               onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { lg: "none" } }}
             >
@@ -67,7 +56,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <IconButton color="inherit">
                 <Badge variant="dot" color="primary">
-                  <HiOutlineBell size={20} />
+                  <HiOutlineBell size={30} />
                 </Badge>
               </IconButton>
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'neutral.main', fontSize: '0.875rem' }}>
@@ -79,37 +68,20 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
         {/* --- SIDEBAR (DRAWER) --- */}
         <Box component="nav" sx={{ width: { lg: drawerWidth }, flexShrink: { lg: 0 } }}>
-          {/* Mobile Drawer */}
+
+          {/* --- Mobile View --- */}
           <Drawer
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{ keepMounted: true }}
-            sx={{
-              display: { xs: "block", lg: "none" },
-              "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
-            }}
           >
-            {/* 2. Add Toolbar spacing so content starts below the header */}
-            <Toolbar /> 
+            <Toolbar />
             {drawerContent}
           </Drawer>
 
-          {/* Desktop Drawer */}
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: "none", lg: "block" },
-              "& .MuiDrawer-paper": { 
-                width: drawerWidth, 
-                boxSizing: "border-box",
-                borderRight: '1px solid',
-                borderColor: 'divider'
-              },
-            }}
-            open
-          >
-            {/* 2. Add Toolbar spacing for desktop too */}
+          {/* --- Desktop View --- */}
+          <Drawer variant="permanent">
             <Toolbar />
             {drawerContent}
           </Drawer>
