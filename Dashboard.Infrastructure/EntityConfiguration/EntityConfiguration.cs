@@ -2,16 +2,20 @@
 
 namespace Dashboard.Infrastructure.EntityConfiguration
 {
-    public class TickConfiguration : IEntityTypeConfiguration<Tick>
+    public class CandleConfiguration : IEntityTypeConfiguration<Candle>
     {
-        public void Configure(EntityTypeBuilder<Tick> builder)
+        public void Configure(EntityTypeBuilder<Candle> builder)
         {
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.Symbol).HasMaxLength(20).IsRequired();
-            builder.Property(p => p.Price).HasPrecision(18, 8).IsRequired(); 
-            builder.Property(p => p.Size).HasPrecision(18, 8).IsRequired();
+            builder.Property(p => p.Symbol).IsRequired();
             builder.Property(p => p.Timestamp).IsRequired();
+            builder.Property(p => p.Open).HasPrecision(18, 8).IsRequired();
+            builder.Property(p => p.High).HasPrecision(18, 8).IsRequired(); 
+            builder.Property(p => p.Low).HasPrecision(18, 8).IsRequired();
+            builder.Property(p => p.Close).HasPrecision(18, 8).IsRequired();
+            builder.Property(p => p.Volume).IsRequired();
+            builder.Property(p => p.AdjustedClose).HasPrecision(18, 8).IsRequired();
 
             // Composite Index: (Symbol + Timestamp)
             // Convention naming: [Type] _ [Table] _ [Column1] _ [Column2]

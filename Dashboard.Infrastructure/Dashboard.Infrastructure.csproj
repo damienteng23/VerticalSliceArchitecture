@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Dashboard.Domain\Dashboard.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+
 </Project>

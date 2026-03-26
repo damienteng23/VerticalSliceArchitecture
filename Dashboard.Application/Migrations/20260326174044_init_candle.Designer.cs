@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dashboard.Application.Migrations
 {
     [DbContext(typeof(DashboardDbContext))]
-    [Migration("20260326134447_init_ticks")]
-    partial class init_ticks
+    [Migration("20260326174044_init_candle")]
+    partial class init_candle
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Dashboard.Application.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Dashboard.Domain.Entities.Tick", b =>
+            modelBuilder.Entity("Dashboard.Domain.Entities.Candle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,21 +33,35 @@ namespace Dashboard.Application.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("AdjustedClose")
                         .HasPrecision(18, 8)
                         .HasColumnType("decimal(18,8)");
 
-                    b.Property<decimal>("Size")
+                    b.Property<decimal>("Close")
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
+
+                    b.Property<decimal>("High")
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
+
+                    b.Property<decimal>("Low")
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
+
+                    b.Property<decimal>("Open")
                         .HasPrecision(18, 8)
                         .HasColumnType("decimal(18,8)");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("Volume")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -57,7 +71,7 @@ namespace Dashboard.Application.Migrations
                     b.HasIndex("Symbol", "Timestamp")
                         .HasDatabaseName("IX_Tick_Symbol_Timestamp");
 
-                    b.ToTable("Ticks");
+                    b.ToTable("Candles");
                 });
 #pragma warning restore 612, 618
         }
