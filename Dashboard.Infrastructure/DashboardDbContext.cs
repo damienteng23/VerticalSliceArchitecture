@@ -6,7 +6,7 @@
         {
         }
 
-        public DbSet<Tick> Products { get; set; }
+        public DbSet<Tick> Ticks { get; set; }
 
 
         // this overrides the original dbContext method for entityConfiguration
