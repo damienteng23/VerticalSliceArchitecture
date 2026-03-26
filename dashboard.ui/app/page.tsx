@@ -21,16 +21,10 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
   const drawerContent = (
     <Box sx={{ overflow: 'auto' }}>
-      <List subheader={<ListSubheader>Analytics</ListSubheader>}>
+      <ListSubheader>Analytics</ListSubheader>
         <ListItemButton selected>
             <ListItemText primary="Heatmaps" />
           </ListItemButton>
-      </List>
-      <List subheader={<ListSubheader sx={{ mt: 2 }}>Subheader 2</ListSubheader>}>
-        <ListItemButton>
-          <ListItemText primary="Subheader 2 item" />
-        </ListItemButton>
-      </List>
     </Box>
   );
 
@@ -89,7 +83,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
         {/* --- MAIN CONTENT --- */}
         <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: 'grey.50', minHeight: '100vh' }}>
-          <Toolbar /> {/* 3. Offset content so it doesn't hide behind the AppBar */}
+          <Toolbar /> {/* Offset content so it doesn't hide behind the AppBar */}
           {children}
         </Box>
       </Box>

@@ -6,7 +6,31 @@ var config = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-
+builder.Services.AddDbContext<DashboardDbContext>(options =>
+{
+    options.UseSqlServer(
+        config.GetConnectionString("DefaultConnection"),
+        sqlServerOptions =>
+        {
+            sqlServerOptions.MigrationsAssembly("Dashboard.Application"); // Specify the assembly containing migrations
+            sqlServerOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null
+            ); // Enable retry logic for transient failures
+        }
+    );
+});
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyMethod()
+                 .AllowAnyHeader()
+                 .WithOrigins("http://localhost:3000")
+                 .AllowCredentials();
+    });
+});
 
 // for global exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

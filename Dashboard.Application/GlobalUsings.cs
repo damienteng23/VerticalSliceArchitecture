@@ -1,9 +1,9 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Threading.Tasks;
+﻿global using Dashboard.Application.Middleware;
+global using Dashboard.Domain.Exceptions;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Mvc;
-global using Dashboard.Domain.Exceptions;
+global using Microsoft.EntityFrameworkCore;
 global using Scalar.AspNetCore;
-global using Dashboard.Application.Middleware;
+global using System;
+global using System.Threading.Tasks;
+global using Dashboard.Infrastructure;

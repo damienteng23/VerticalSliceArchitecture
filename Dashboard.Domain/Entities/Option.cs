@@ -1,6 +1,6 @@
 ﻿namespace Dashboard.Domain.Entities
 {
-    public  class Option
+    public class Option
     {
         /// <summary>
         /// Current price of the asset (S)

@@ -1,0 +1,9 @@
+import React from 'react'
+
+function heatmap() {
+  return (
+    <p>heatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmapheatmap</p>
+  )
+}
+
+export default heatmap
