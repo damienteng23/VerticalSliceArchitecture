@@ -1,26 +1,21 @@
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+// required to add .NET aspire to the existing service collection for the application to work
+builder.AddServiceDefaults();
+
 #region Add services to the container.
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DashboardDbContext>(options =>
-{
-    options.UseSqlServer(
-        config.GetConnectionString("DefaultConnection"),
-        sqlServerOptions =>
-        {
-            sqlServerOptions.MigrationsAssembly("Dashboard.Application"); // Specify the assembly containing migrations
-            sqlServerOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null
-            ); // Enable retry logic for transient failures
-        }
-    );
-});
+builder.AddSqlServerDbContext<DashboardDbContext>("DashboardDb",
+    settings => { /* You can tune settings here if needed */ },
+    options => {
+        options.UseSqlServer(sqlServerOptions => {  
+            sqlServerOptions.MigrationsAssembly("Dashboard.Application");
+        });
+    });
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
@@ -52,6 +47,9 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+// Map the health check endpoints for the Aspire Dashboard
+app.MapDefaultEndpoints();
+
 #region Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -70,17 +68,13 @@ if (app.Environment.IsDevelopment())
 // for global exception handling - part 2
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
-app.UseRouting();
-app.UseStaticFiles();
 
+app.UseStaticFiles();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("CorsPolicy");
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
 #endregion
 
 app.Run();
