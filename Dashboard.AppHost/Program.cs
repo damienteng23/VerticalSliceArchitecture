@@ -1,7 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 // 1. Setup the SQL Server Container
-var sql = builder.AddSqlServer("sqlserver"); // resource name
+var sql = builder.AddSqlServer("sqlserver") // resource name
+    .WithDataVolume() 
+    .WithLifetime(ContainerLifetime.Persistent);
 var db = sql.AddDatabase("DashboardDb"); //  matches builder.AddSqlServerDbContext("DashboardDb")
 
 // 2. Reference your Web Project

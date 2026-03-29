@@ -55,8 +55,19 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
-    //var dbContext = services.GetRequiredService<StoreDbContext>();
-    //dbContext.Database.Migrate();
+
+    try
+    {
+        var dbContext = services.GetRequiredService<DashboardDbContext>();
+        await dbContext.Database.MigrateAsync();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Database migration completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
 
     app.MapOpenApi();
     app.MapScalarApiReference();
