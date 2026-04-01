@@ -1,21 +1,24 @@
+using Dashboard.Application.Slice.Backtesting;
+using Dashboard.Application.Slice.ExternalData;
+using DbUp;
+
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
-
-// required to add .NET aspire to the existing service collection for the application to work
-builder.AddServiceDefaults();
 
 #region Add services to the container.
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.AddSqlServerDbContext<DashboardDbContext>("DashboardDb",
-    settings => { /* You can tune settings here if needed */ },
-    options => {
-        options.UseSqlServer(sqlServerOptions => {  
-            sqlServerOptions.MigrationsAssembly("Dashboard.Application");
-        });
+builder.Services.AddDbContext<DashboardDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DashboardDb");
+    options.UseSqlServer(connectionString, sqlServerOptions =>
+    {
+        sqlServerOptions.MigrationsAssembly("Dashboard.Application");
+        sqlServerOptions.CommandTimeout(60);
     });
+});
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
@@ -32,7 +35,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 #region AddScoped region for repository
-// builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+//builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 #endregion
 
 #region AddScoped region for domain services
@@ -40,15 +43,14 @@ builder.Services.AddProblemDetails();
 #endregion
 
 #region AddScoped region for application services
-// builder.Services.AddScoped<IMockDataService, MockDataService>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IExternalDataService, ExternalDataService>();
+builder.Services.AddScoped<IBacktestingService, BacktestingService>();
 #endregion
 
 #endregion
 
 var app = builder.Build();
-
-// Map the health check endpoints for the Aspire Dashboard
-app.MapDefaultEndpoints();
 
 #region Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -61,7 +63,24 @@ if (app.Environment.IsDevelopment())
         var dbContext = services.GetRequiredService<DashboardDbContext>();
         await dbContext.Database.MigrateAsync();
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Database migration completed successfully.");
+        logger.LogInformation("EF Core Schema Migration complete");
+
+        var connectionString = config.GetConnectionString("DashboardDb");
+
+        var upgrader = DeployChanges.To
+                .SqlDatabase(connectionString)
+                .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
+                    name => name.Contains("Scripts.ProgrammableObjects")) // ONLY run SPs/UDTTs
+                .JournalToSqlTable("dbo", "SchemaVersions_DbUp") // Separate journal for DbUp
+                .LogToConsole()
+                .Build();
+
+        var result = upgrader.PerformUpgrade();
+
+        if (!result.Successful)
+            logger.LogError(result.Error, "DbUp migration failed.");
+        else
+            logger.LogInformation("DbUp programmable objects updated successfully.");
     }
     catch (Exception ex)
     {

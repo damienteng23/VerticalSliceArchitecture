@@ -6,7 +6,7 @@
         {
         }
 
-        public DbSet<Candle> Candles { get; set; }
+        public DbSet<DailyTickerSummary> DailyTickerSummary { get; set; }
 
 
         // this overrides the original dbContext method for entityConfiguration

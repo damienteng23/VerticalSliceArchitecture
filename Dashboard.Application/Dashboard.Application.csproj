@@ -4,11 +4,17 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>23a07880-756f-4f28-95f6-9d812bd2a63a</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Scripts\**\*.sql" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.2.0" />
     <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.2.0" />
+    <PackageReference Include="dbup-sqlserver" Version="7.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
@@ -16,18 +22,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Scalar.AspNetCore" Version="2.13.16" />
-    <PackageReference Include="YahooFinanceApi" Version="2.3.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Slice\Greeks\" />
-    <Folder Include="Slice\Shared\" />
-    <Folder Include="Slice\Pricing\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
 	  <ProjectReference Include="..\Dashboard.Infrastructure\Dashboard.Infrastructure.csproj" />
-	  <ProjectReference Include="..\Dashboard.ServiceDefaults\Dashboard.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

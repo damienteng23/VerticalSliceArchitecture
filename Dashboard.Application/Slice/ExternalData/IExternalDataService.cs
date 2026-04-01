@@ -2,6 +2,6 @@
 {
     public interface IExternalDataService
     {
-        Task<string> GetDataFromYFinance(string[] symbols);
+        Task<string> UpsertDailyTickerFromPolygon(string[] symbols);
     }
 }

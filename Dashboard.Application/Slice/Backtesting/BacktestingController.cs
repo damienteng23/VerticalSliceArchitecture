@@ -19,15 +19,15 @@ namespace Dashboard.Application.Slice.Backtesting
             _externalDataService = externalDataService;
         }
 
-        [HttpPost("GetDataFromYFinance")]
+        [HttpPost("upsertDailyTickerFromPolygon")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetDataFromYFinance(IEnumerable<string> symbols)
+        public async Task<IActionResult> UpsertDailyTickerFromPolygon(IEnumerable<string> symbols)
         {
-            var response = await _externalDataService.GetDataFromYFinance(symbols.ToArray());
+            var response = await _externalDataService.UpsertDailyTickerFromPolygon(symbols.ToArray());
             return Ok(response);
         }
     }

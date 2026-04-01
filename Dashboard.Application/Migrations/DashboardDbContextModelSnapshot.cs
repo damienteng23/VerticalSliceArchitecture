@@ -22,15 +22,15 @@ namespace Dashboard.Application.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Dashboard.Domain.Entities.Candle", b =>
+            modelBuilder.Entity("Dashboard.Domain.Entities.DailyTickerSummary", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("From")
+                        .HasColumnType("datetime2");
 
-                    b.Property<decimal>("AdjustedClose")
+                    b.Property<decimal>("AfterHours")
                         .HasPrecision(18, 8)
                         .HasColumnType("decimal(18,8)");
 
@@ -50,25 +50,23 @@ namespace Dashboard.Application.Migrations
                         .HasPrecision(18, 8)
                         .HasColumnType("decimal(18,8)");
 
-                    b.Property<string>("Symbol")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<decimal>("PreMarket")
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("Volume")
                         .HasColumnType("bigint");
 
-                    b.HasKey("Id");
+                    b.HasKey("Symbol", "From");
 
-                    b.HasIndex("Timestamp")
-                        .HasDatabaseName("IX_Tick_Timestamp");
+                    b.HasIndex("From")
+                        .HasDatabaseName("IX_DailyTickerSummary_From");
 
-                    b.HasIndex("Symbol", "Timestamp")
-                        .HasDatabaseName("IX_Tick_Symbol_Timestamp");
-
-                    b.ToTable("Candles");
+                    b.ToTable("DailyTickerSummary");
                 });
 #pragma warning restore 612, 618
         }
