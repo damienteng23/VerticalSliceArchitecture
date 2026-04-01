@@ -16,7 +16,7 @@ builder.Services.AddDbContext<DashboardDbContext>(options =>
     options.UseSqlServer(connectionString, sqlServerOptions =>
     {
         sqlServerOptions.MigrationsAssembly("Dashboard.Application");
-        sqlServerOptions.CommandTimeout(60);
+        sqlServerOptions.CommandTimeout(20);
     });
 });
 builder.Services.AddCors(opt =>
