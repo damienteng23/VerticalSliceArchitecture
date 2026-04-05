@@ -25,6 +25,9 @@ namespace Dashboard.Application.Slice.ExternalData
             var response = await _polygonApi.GetDailyAggregates(
                 symbol, startDate, endDate, apiKey: _apiKeyMassive);
 
+            if (response.Results is null)
+                throw new ArgumentNullException("Null data retrieved from polygon, please wait for a few minutes before trying again..");
+
             // Map PolygonAgg → DailyTicker
             var tickers = response.Results
                 .Select(agg => new DailyTickerSummary
