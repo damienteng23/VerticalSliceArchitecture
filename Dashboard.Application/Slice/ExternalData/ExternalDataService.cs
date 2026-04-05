@@ -1,56 +1,51 @@
-﻿using System.Collections.Concurrent;
+﻿using Dashboard.Domain.Entities;
+using System.Collections.Concurrent;
 
 namespace Dashboard.Application.Slice.ExternalData
 {
     public class ExternalDataService : IExternalDataService
     {
         private readonly string _apiKeyMassive;
-        private readonly HttpClient _httpClient;
+        private readonly IPolygonApi _polygonApi;
+        private readonly IDailyTickerRepository _dailyTickerRepository;
 
-        public ExternalDataService(IConfiguration configuration, HttpClient httpClient)
+        public ExternalDataService(IConfiguration configuration, IPolygonApi polygonApi, IDailyTickerRepository dailyTickerRepository)
         {
             _apiKeyMassive = configuration["ApiKeys:hy_massive_api_key"];
-            _httpClient = httpClient;
+            _polygonApi = polygonApi;
+            _dailyTickerRepository = dailyTickerRepository;
         }
 
-        public async Task<string> UpsertDailyTickerFromPolygon(string[] symbols)
+        public async Task UpsertDailyTickerHistoricalDataFromPolygon(string symbol)
         {
-            // check existing symbols in database and only fetch missing ones
-            // logic....
+            var startDate = DateTime.Now.AddYears(-10).ToString("yyyy-MM-dd");
+            var endDate = DateTime.Now.ToString("yyyy-MM-dd");
 
-            //var allData = new ConcurrentBag<(string Symbol, IEnumerable<YahooFinanceApi.Candle> Data)>();
-            var options = new ParallelOptions { MaxDegreeOfParallelism = 5 }; // throttle to avoid hitting API limits
+            // Call API
+            var response = await _polygonApi.GetDailyAggregates(
+                symbol, startDate, endDate, apiKey: _apiKeyMassive);
 
-            try
-            {
-                //var history = await Yahoo.GetHistoricalAsync(symbols[0], DateTime.Now.AddMonths(-1), DateTime.Now);
-                //allData.Add((symbols[0], history));
-            }
-            catch (Exception ex)
-            {
-                // Log the actual response body to see if Yahoo gave a specific reason
-                //var errorBody = await ex.GetResponseStringAsync();
-                //Console.WriteLine($"Yahoo API Error: {errorBody}");
-            }
+            // Map PolygonAgg → DailyTicker
+            var tickers = response.Results
+                .Select(agg => new DailyTickerSummary
+                (
+                    symbol,
+                    UnixTimeStampToDateTime(agg.Timestamp),
+                    (decimal)agg.Open,
+                    (decimal)agg.High,
+                    (decimal)agg.Low,
+                    (decimal)agg.Close,
+                    (long)agg.Volume,
+                    0m,  // Polygon doesn't provide this in aggregates endpoint
+                    0m, // Polygon doesn't provide this in aggregates endpoint
+                    "active"
+                ));
 
-            //await Parallel.ForEachAsync(symbols, options, async (symbol, token) =>
-            //{
-            //    try
-            //    {
-            //        await Task.Delay(Random.Shared.Next(100, 300), token);
-            //        var history = await Yahoo.GetHistoricalAsync(symbol, new DateTime(1970, 1, 1), DateTime.Now);
-            //        allData.Add((symbol, history));
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine($"Error downloading {symbol}: {ex.Message}");
-            //    }
-            //});
-
-
-            //await SaveToDatabaseAsync(allData);
-
-            return "test";
+            // save to DB
+            await _dailyTickerRepository.UpsertDailyTickersAsync(tickers);
         }
+
+        private DateTime UnixTimeStampToDateTime(long timestamp)
+            => DateTimeOffset.FromUnixTimeMilliseconds(timestamp).DateTime;
     }
 }

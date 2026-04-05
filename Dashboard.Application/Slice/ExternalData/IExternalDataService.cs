@@ -1,7 +1,9 @@
-﻿namespace Dashboard.Application.Slice.ExternalData
+﻿using Dashboard.Domain.Entities;
+
+namespace Dashboard.Application.Slice.ExternalData
 {
     public interface IExternalDataService
     {
-        Task<string> UpsertDailyTickerFromPolygon(string[] symbols);
+        Task UpsertDailyTickerHistoricalDataFromPolygon(string symbol);
     }
 }
