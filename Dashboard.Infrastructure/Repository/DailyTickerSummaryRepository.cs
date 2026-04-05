@@ -91,38 +91,6 @@ public class DailyTickerRepository : IDailyTickerRepository
     }
 
     /// <summary>
-    /// Get daily ticker by symbol and date range
-    /// </summary>
-    public async Task<IEnumerable<DailyTickerSummary>> GetDailyTickersAsync(string symbol, DateTime startDate, DateTime endDate)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            var sql = @"
-                SELECT 
-                    [Symbol],
-                    [Date],
-                    [Open],
-                    [High],
-                    [Low],
-                    [Close],
-                    [Volume],
-                    [PreMarket],
-                    [AfterHours],
-                    [Status]
-                FROM [dbo].[DailyTicker]
-                WHERE [Symbol] = @Symbol
-                  AND [Date] BETWEEN @StartDate AND @EndDate
-                ORDER BY [Date] ASC";
-
-            var result = await connection.QueryAsync<DailyTickerSummary>(
-                sql,
-                new { Symbol = symbol, StartDate = startDate, EndDate = endDate });
-
-            return result;
-        }
-    }
-
-    /// <summary>
     /// Check if ticker data exists for a symbol
     /// </summary>
     public async Task<bool> TickerExistsAsync(string symbol)
@@ -145,6 +113,21 @@ public class DailyTickerRepository : IDailyTickerRepository
             var sql = "SELECT MAX([Date]) FROM [dbo].[DailyTicker] WHERE [Symbol] = @Symbol";
             var result = await connection.ExecuteScalarAsync<DateTime?>(sql, new { Symbol = symbol });
             return result;
+        }
+    }
+
+    public async Task<IEnumerable<DailyTickerSummary>> GetDailyTickerAsync(string symbol, DateTime startDate, DateTime endDate)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            return await connection.QueryAsync<DailyTickerSummary>(
+                 @"SELECT * FROM [dbo].[DailyTickerSummary]
+                  WHERE Symbol = @symbol
+                  AND [From] >= @startDate
+                  AND [From] <= @endDate
+                  ORDER BY [From] ASC",
+             new { symbol, startDate, endDate }
+            );
         }
     }
 }

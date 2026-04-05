@@ -30,5 +30,18 @@ namespace Dashboard.Application.Slice.Backtesting
             await _externalDataService.UpsertDailyTickerHistoricalDataFromPolygon(symbol);
             return Ok();
         }
+
+        [HttpPost("backtestMovingAverageStrategy")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> BacktestMovingAverageStrategy(string symbol, int shortPeriod, int longPeriod)
+        {
+            var result = await _backtestingService.BacktestMovingAverageStrategy(symbol, shortPeriod, longPeriod);
+            return Ok(result);
+        }
+
     }
 }
