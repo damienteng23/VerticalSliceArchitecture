@@ -2,8 +2,8 @@
 {
     public record MovingAveragePoints
     {
-        public decimal? maShortPeriod { get; set; }
-        public decimal? maLongPeriod { get; set; }
+        public decimal? MaShortPeriod { get; set; }
+        public decimal? MaLongPeriod { get; set; }
         public decimal Close { get; set; }
         public string Date { get; set; }
     }

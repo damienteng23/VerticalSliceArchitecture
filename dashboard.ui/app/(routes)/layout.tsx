@@ -1,18 +1,18 @@
 "use client"
 
 import React, { useState } from "react";
-import { 
-  Box, Drawer, AppBar, Toolbar, IconButton, Typography, 
-  List, ListItem, ListItemButton, ListItemText, ListSubheader, Avatar, Badge, CssBaseline, 
+import {
+  Box, Drawer, AppBar, Toolbar, IconButton, Typography,
+  List, ListItem, ListItemButton, ListItemText, ListSubheader, Avatar, Badge, CssBaseline,
   ThemeProvider
 } from "@mui/material";
 import { LuMenu } from "react-icons/lu";
 import { HiOutlineBell } from "react-icons/hi";
-import { theme } from "./_shared/theme";
+import { theme } from "../_shared/theme";
 
 const drawerWidth = 256;
 
-export default function DashboardPage({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -21,10 +21,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
   const drawerContent = (
     <Box sx={{ overflow: 'auto' }}>
-      <ListSubheader>Analytics</ListSubheader>
-        <ListItemButton selected>
-            <ListItemText primary="Heatmaps" />
-          </ListItemButton>
+      <ListSubheader>Strategies</ListSubheader>
     </Box>
   );
 
@@ -32,7 +29,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: "flex" }}>
-        
+
         <AppBar>
           <Toolbar>
             <IconButton
@@ -42,7 +39,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
             >
               <LuMenu />
             </IconButton>
-            
+
             <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 'bold' }}>
               Dashboard.UI
             </Typography>
@@ -83,7 +80,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
         {/* --- MAIN CONTENT --- */}
         <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: 'grey.50', minHeight: '100vh' }}>
-          <Toolbar /> {/* Offset content so it doesn't hide behind the AppBar */}
+          <Toolbar />
           {children}
         </Box>
       </Box>

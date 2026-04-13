@@ -35,12 +35,12 @@ namespace Dashboard.Application.Slice.Backtesting
                 if (hasShortPeriodBehind)
                 {
                     var shortPeriodPointData = sorted.Skip(i ).Take(shortPeriod);
-                    calculatedPoint.maShortPeriod = shortPeriodPointData.Average(x => x.Close);
+                    calculatedPoint.MaShortPeriod = shortPeriodPointData.Average(x => x.Close);
                 }
                 if (hasLongPeriodBehind)
                 {
                     var longPeriodPointData = sorted.Skip(i).Take(longPeriod);
-                    calculatedPoint.maLongPeriod = longPeriodPointData.Average(x => x.Close);
+                    calculatedPoint.MaLongPeriod = longPeriodPointData.Average(x => x.Close);
                 }
 
                 results.Add(calculatedPoint);
