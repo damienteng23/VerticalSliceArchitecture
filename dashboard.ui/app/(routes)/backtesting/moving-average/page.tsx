@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SciChartSurface, NumericAxis, DateTimeNumericAxis, XyDataSeries, SplineLineRenderableSeries, LegendModifier, EAutoRange, MouseWheelZoomModifier, ZoomPanModifier, XAxisDragModifier, YAxisDragModifier, NumberRange } from "scichart";
+import { SciChartSurface, NumericAxis, DateTimeNumericAxis, XyDataSeries, SplineLineRenderableSeries, LegendModifier, EAutoRange, MouseWheelZoomModifier, ZoomPanModifier, XAxisDragModifier, YAxisDragModifier, NumberRange, RolloverModifier, CursorModifier } from "scichart";
 import { useMovingAverageData, useMovingAverageStatus } from "../../../_redux/hooks";
 import { useAppDispatch } from "../../../_redux/hooks";
 import { runBacktest } from "../../../_redux/slices/backtesting/moving-average/slice";
@@ -41,7 +41,7 @@ export default function MovingAveragePage() {
             const { sciChartSurface, wasmContext } = await SciChartSurface.create(chartRef.current);
             surface = sciChartSurface;
 
-            const xAxis = new DateTimeNumericAxis(wasmContext, { autoRange: EAutoRange.Never, growBy: new NumberRange(0.1, 0.1) });
+            const xAxis = new DateTimeNumericAxis(wasmContext, { autoRange: EAutoRange.Once, growBy: new NumberRange(0.1, 0.1) });
             xAxis.labelProvider.formatLabel = (dataValue: number) => {
                 const date = new Date(dataValue * 1000);
                 const dd = String(date.getDate()).padStart(2, '0');
@@ -50,12 +50,18 @@ export default function MovingAveragePage() {
                 return `${dd}-${mm}-${yyyy}`;
             };
             sciChartSurface.xAxes.add(xAxis);
-            sciChartSurface.yAxes.add(new NumericAxis(wasmContext, { autoRange: EAutoRange.Never, growBy: new NumberRange(0.1, 0.1) }));
+            sciChartSurface.yAxes.add(new NumericAxis(wasmContext, { autoRange: EAutoRange.Once, growBy: new NumberRange(0.1, 0.1) }));
 
             const xValues = rawData.map((p) => new Date(p.date).getTime() / 1000);
             const closeValues = rawData.map((p) => p.close);
-            const shortMaValues = rawData.map((p) => p.maShortPeriod ?? NaN);
-            const longMaValues = rawData.map((p) => p.maLongPeriod ?? NaN);
+
+            const shortMaPoints = rawData.filter((p) => p.maShortPeriod != null);
+            const shortMaXValues = shortMaPoints.map((p) => new Date(p.date).getTime() / 1000);
+            const shortMaYValues = shortMaPoints.map((p) => p.maShortPeriod!);
+
+            const longMaPoints = rawData.filter((p) => p.maLongPeriod != null);
+            const longMaXValues = longMaPoints.map((p) => new Date(p.date).getTime() / 1000);
+            const longMaYValues = longMaPoints.map((p) => p.maLongPeriod!);
 
             sciChartSurface.renderableSeries.add(
                 new SplineLineRenderableSeries(wasmContext, {
@@ -67,7 +73,7 @@ export default function MovingAveragePage() {
 
             sciChartSurface.renderableSeries.add(
                 new SplineLineRenderableSeries(wasmContext, {
-                    dataSeries: new XyDataSeries(wasmContext, { dataSeriesName: "Short MA", xValues, yValues: shortMaValues, containsNaN: true, isSorted: true }),
+                    dataSeries: new XyDataSeries(wasmContext, { dataSeriesName: "Short MA", xValues: shortMaXValues, yValues: shortMaYValues, containsNaN: false, isSorted: true }),
                     stroke: "#4fc3f7",
                     strokeThickness: 2,
                 })
@@ -75,13 +81,14 @@ export default function MovingAveragePage() {
 
             sciChartSurface.renderableSeries.add(
                 new SplineLineRenderableSeries(wasmContext, {
-                    dataSeries: new XyDataSeries(wasmContext, { dataSeriesName: "Long MA", xValues, yValues: longMaValues, containsNaN: true, isSorted: true }),
+                    dataSeries: new XyDataSeries(wasmContext, { dataSeriesName: "Long MA", xValues: longMaXValues, yValues: longMaYValues, containsNaN: false, isSorted: true }),
                     stroke: "#f48fb1",
                     strokeThickness: 2,
                 })
             );
 
             sciChartSurface.chartModifiers.add(new LegendModifier());
+            sciChartSurface.chartModifiers.add(new RolloverModifier({ showTooltip: true, snapToDataPoint: true }));            
             sciChartSurface.chartModifiers.add(new MouseWheelZoomModifier());
             sciChartSurface.chartModifiers.add(new ZoomPanModifier());
             sciChartSurface.chartModifiers.add(new XAxisDragModifier());
