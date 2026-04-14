@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SciChartSurface, NumericAxis, DateTimeNumericAxis, XyDataSeries, SplineLineRenderableSeries, LegendModifier, EAutoRange, MouseWheelZoomModifier, ZoomPanModifier, XAxisDragModifier, YAxisDragModifier, NumberRange, RolloverModifier, CursorModifier } from "scichart";
+import { Button, TextField } from "@mui/material";
+import { SciChartSurface, NumericAxis, DateTimeNumericAxis, XyDataSeries, FastLineRenderableSeries, LegendModifier, EAutoRange, MouseWheelZoomModifier, ZoomPanModifier, XAxisDragModifier, YAxisDragModifier, NumberRange, CursorModifier, EXyDirection, RolloverModifier, SplineLineRenderableSeries } from "scichart";
 import { useMovingAverageData, useMovingAverageStatus } from "../../../_redux/hooks";
 import { useAppDispatch } from "../../../_redux/hooks";
 import { runBacktest } from "../../../_redux/slices/backtesting/moving-average/slice";
@@ -41,7 +42,7 @@ export default function MovingAveragePage() {
             const { sciChartSurface, wasmContext } = await SciChartSurface.create(chartRef.current);
             surface = sciChartSurface;
 
-            const xAxis = new DateTimeNumericAxis(wasmContext, { autoRange: EAutoRange.Once, growBy: new NumberRange(0.1, 0.1) });
+            const xAxis = new DateTimeNumericAxis(wasmContext, { autoRange: EAutoRange.Never, growBy: new NumberRange(0.1, 0.1) });
             xAxis.labelProvider.formatLabel = (dataValue: number) => {
                 const date = new Date(dataValue * 1000);
                 const dd = String(date.getDate()).padStart(2, '0');
@@ -88,7 +89,6 @@ export default function MovingAveragePage() {
             );
 
             sciChartSurface.chartModifiers.add(new LegendModifier());
-            sciChartSurface.chartModifiers.add(new RolloverModifier({ showTooltip: true, snapToDataPoint: true }));            
             sciChartSurface.chartModifiers.add(new MouseWheelZoomModifier());
             sciChartSurface.chartModifiers.add(new ZoomPanModifier());
             sciChartSurface.chartModifiers.add(new XAxisDragModifier());
@@ -107,42 +107,41 @@ export default function MovingAveragePage() {
     return (
         <div>
             <h1>Backtesting</h1>
-            <div style={{ display: "flex", gap: "12px", alignItems: "flex-end", marginBottom: "16px" }}>
-                <label>
-                    Symbol
-                    <input
-                        type="text"
-                        value={symbol}
-                        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                        placeholder="e.g. AAPL"
-                        style={{ display: "block", padding: "6px 8px", marginTop: "4px" }}
-                    />
-                </label>
-                <label>
-                    Short Period
-                    <input
-                        type="number"
-                        value={shortPeriod}
-                        onChange={(e) => setShortPeriod(Number(e.target.value))}
-                        min={1}
-                        style={{ display: "block", padding: "6px 8px", marginTop: "4px", width: "80px" }}
-                    />
-                </label>
-                <label>
-                    Long Period
-                    <input
-                        type="number"
-                        value={longPeriod}
-                        onChange={(e) => setLongPeriod(Number(e.target.value))}
-                        min={1}
-                        style={{ display: "block", padding: "6px 8px", marginTop: "4px", width: "80px" }}
-                    />
-                </label>
-                <button onClick={handleRun} disabled={status === 'loading'} style={{ padding: "6px 16px" }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "16px" }}>
+                <TextField
+                    label="Symbol"
+                    value={symbol}
+                    onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+                    placeholder="e.g. AAPL"
+                    size="small"
+                />
+                <TextField
+                    label="Short Period"
+                    type="number"
+                    value={shortPeriod}
+                    onChange={(e) => setShortPeriod(Number(e.target.value))}
+                    slotProps={{ htmlInput: { min: 1 } }}
+                    size="small"
+                    sx={{ width: 120 }}
+                />
+                <TextField
+                    label="Long Period"
+                    type="number"
+                    value={longPeriod}
+                    onChange={(e) => setLongPeriod(Number(e.target.value))}
+                    slotProps={{ htmlInput: { min: 1 } }}
+                    size="small"
+                    sx={{ width: 120 }}
+                />
+                <Button
+                    variant="contained"
+                    onClick={handleRun}
+                    disabled={status === 'loading'}
+                >
                     {status === 'loading' ? 'Running...' : 'Run'}
-                </button>
+                </Button>
             </div>
-            <div ref={chartRef} style={{ width: "100%", height: 400 }} />
+            <div ref={chartRef} style={{ width: "100%", position: "relative" }} />
         </div>
     );
 }
