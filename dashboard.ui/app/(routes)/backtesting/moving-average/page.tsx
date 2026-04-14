@@ -53,24 +53,30 @@ export default function MovingAveragePage() {
             sciChartSurface.xAxes.add(xAxis);
             sciChartSurface.yAxes.add(new NumericAxis(wasmContext, { autoRange: EAutoRange.Once, growBy: new NumberRange(0.1, 0.1) }));
 
-            const xValues = rawData.map((p) => new Date(p.date).getTime() / 1000);
+            const xValues = rawData.map((p) => new Date(p.date).getTime() / 1000).sort((a, b) => a - b);
             const closeValues = rawData.map((p) => p.close);
 
             const shortMaPoints = rawData.filter((p) => p.maShortPeriod != null);
-            const shortMaXValues = shortMaPoints.map((p) => new Date(p.date).getTime() / 1000);
+            const shortMaXValues = shortMaPoints.map((p) => new Date(p.date).getTime() / 1000).sort((a, b) => a - b);
             const shortMaYValues = shortMaPoints.map((p) => p.maShortPeriod!);
 
             const longMaPoints = rawData.filter((p) => p.maLongPeriod != null);
-            const longMaXValues = longMaPoints.map((p) => new Date(p.date).getTime() / 1000);
+            const longMaXValues = longMaPoints.map((p) => new Date(p.date).getTime() / 1000).sort((a, b) => a - b);
             const longMaYValues = longMaPoints.map((p) => p.maLongPeriod!);
 
             sciChartSurface.renderableSeries.add(
                 new SplineLineRenderableSeries(wasmContext, {
-                    dataSeries: new XyDataSeries(wasmContext, { dataSeriesName: "Close", xValues, yValues: closeValues, containsNaN: false, isSorted: true }),
+                    dataSeries: new XyDataSeries(wasmContext, { 
+                        dataSeriesName: "Close",
+                        xValues: xValues,
+                        yValues: closeValues,
+                        containsNaN: false,
+                        isSorted: true 
+                    }),
                     stroke: "#ffffff",
                     strokeThickness: 2,
                 })
-            );
+            );7
 
             sciChartSurface.renderableSeries.add(
                 new SplineLineRenderableSeries(wasmContext, {
@@ -88,11 +94,12 @@ export default function MovingAveragePage() {
                 })
             );
 
-            sciChartSurface.chartModifiers.add(new LegendModifier());
-            sciChartSurface.chartModifiers.add(new MouseWheelZoomModifier());
-            sciChartSurface.chartModifiers.add(new ZoomPanModifier());
-            sciChartSurface.chartModifiers.add(new XAxisDragModifier());
-            sciChartSurface.chartModifiers.add(new YAxisDragModifier());
+            // sciChartSurface.chartModifiers.add(new LegendModifier());
+            // sciChartSurface.chartModifiers.add(new MouseWheelZoomModifier());
+            // sciChartSurface.chartModifiers.add(new ZoomPanModifier());
+            // sciChartSurface.chartModifiers.add(new XAxisDragModifier());
+            // sciChartSurface.chartModifiers.add(new YAxisDragModifier());
+            sciChartSurface.chartModifiers.add(new RolloverModifier({ snapToDataPoint: true }));
 
             requestAnimationFrame(() => sciChartSurface.zoomExtents());
         };
