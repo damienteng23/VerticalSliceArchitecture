@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,8 +25,8 @@
     "@types/node": "^20.19.39",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.1",
+    "eslint": "^10.2.0",
+    "eslint-config-next": "^16.2.3",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3"
   },

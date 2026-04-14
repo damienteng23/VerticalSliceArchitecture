@@ -14,32 +14,33 @@ namespace Dashboard.Application.Slice.Backtesting
         {
             var symbolDataPastTwoYears = await _dailyTickerRepository
                 .GetDailyTickerAsync(symbol, DateTime.Now.AddYears(-2), DateTime.Now);
+
             if (symbolDataPastTwoYears is null || !symbolDataPastTwoYears.Any())
                 throw new ArgumentNullException($"GetDailyTickerAsync: No data found for the given symbol and date range.");
 
-            var sorted = symbolDataPastTwoYears.OrderByDescending(x => x.From).ToArray();
+            var dataArray = symbolDataPastTwoYears.ToArray();
             var results = new List<MovingAveragePoints>();
 
-            for (int i = 0; i < sorted.Length; i++)
+            for (int i = 0; i < dataArray.Length; i++)
             {
                 var calculatedPoint = new MovingAveragePoints
                 {
-                    Date = sorted[i].From.Date.ToString("yyyy-MM-dd"),
-                    Close = sorted[i].Close
+                    Date = new DateTimeOffset(dataArray[i].From).ToUnixTimeSeconds(),
+                    Close = dataArray[i].Close
                 };
 
-                var point = sorted[i];
-                bool hasShortPeriodBehind = (sorted.Length - 1 - i) >= shortPeriod;
-                bool hasLongPeriodBehind = (sorted.Length - 1 - i) >= longPeriod;
+                var point = dataArray[i];
+                bool hasShortPeriodBehind = (dataArray.Length - 1 - i) >= shortPeriod;
+                bool hasLongPeriodBehind = (dataArray.Length - 1 - i) >= longPeriod;
 
                 if (hasShortPeriodBehind)
                 {
-                    var shortPeriodPointData = sorted.Skip(i ).Take(shortPeriod);
+                    var shortPeriodPointData = dataArray.Skip(i ).Take(shortPeriod);
                     calculatedPoint.MaShortPeriod = shortPeriodPointData.Average(x => x.Close);
                 }
                 if (hasLongPeriodBehind)
                 {
-                    var longPeriodPointData = sorted.Skip(i).Take(longPeriod);
+                    var longPeriodPointData = dataArray.Skip(i).Take(longPeriod);
                     calculatedPoint.MaLongPeriod = longPeriodPointData.Average(x => x.Close);
                 }
 

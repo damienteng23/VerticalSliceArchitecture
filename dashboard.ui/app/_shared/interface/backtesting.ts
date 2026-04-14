@@ -2,7 +2,7 @@ export type MovingAveragePoint = {
     maShortPeriod: number | null;
     maLongPeriod: number | null;
     close: number;
-    date: string;
+    date: number; // unix timestamp
 };
 
 export type MovingAverageParams = {
