@@ -98,7 +98,7 @@ export default function MovingAveragePage() {
 
 
       sciChartSurface.renderableSeries.add(
-        new SplineLineRenderableSeries(wasmContext, {
+        new FastLineRenderableSeries(wasmContext, {
           dataSeries: new XyDataSeries(wasmContext, {
             dataSeriesName: "Close",
             xValues: xValuesClose,
@@ -113,7 +113,7 @@ export default function MovingAveragePage() {
       7;
 
       sciChartSurface.renderableSeries.add(
-        new SplineLineRenderableSeries(wasmContext, {
+        new FastLineRenderableSeries(wasmContext, {
           dataSeries: new XyDataSeries(wasmContext, {
             dataSeriesName: "Short MA",
             xValues: xValuesShortMa,
@@ -127,7 +127,7 @@ export default function MovingAveragePage() {
       );
 
       sciChartSurface.renderableSeries.add(
-        new SplineLineRenderableSeries(wasmContext, {
+        new FastLineRenderableSeries(wasmContext, {
           dataSeries: new XyDataSeries(wasmContext, {
             dataSeriesName: "Long MA",
             xValues: xValuesLongMa,

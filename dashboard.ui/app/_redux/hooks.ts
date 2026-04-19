@@ -16,3 +16,6 @@ export const useMovingAverageStatus = () =>
 
 export const useMovingAverageError = () =>
   useAppSelector((state) => state.movingAverage.error);
+
+export const useNotes = () =>
+  useAppSelector((state) => state.notes.notes);
