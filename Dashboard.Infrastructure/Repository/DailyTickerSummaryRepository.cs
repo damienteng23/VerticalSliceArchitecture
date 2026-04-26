@@ -130,4 +130,14 @@ public class DailyTickerRepository : IDailyTickerRepository
             );
         }
     }
+
+    public async Task<IEnumerable<string>> GetDistinctSymbolsAsync()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            return await connection.QueryAsync<string>(
+                "SELECT DISTINCT [Symbol] FROM [dbo].[DailyTickerSummary]"
+            );
+        }
+    }
 }

@@ -49,5 +49,10 @@ namespace Dashboard.Application.Slice.Backtesting
 
             return results;
         }
+
+        public async Task<IEnumerable<string>> GetDistinctTickers()
+        {
+            return await _dailyTickerRepository.GetDistinctSymbolsAsync();
+        }
     }
 }

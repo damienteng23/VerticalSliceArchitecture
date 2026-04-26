@@ -5,5 +5,6 @@ namespace Dashboard.Application.Slice.Backtesting
     public interface IBacktestingService
     {
         Task<List<MovingAveragePoints>> BacktestMovingAverageStrategy(string symbol, int shortPeriod, int longPeriod);
+        Task<IEnumerable<string>> GetDistinctTickers();
     }
 }

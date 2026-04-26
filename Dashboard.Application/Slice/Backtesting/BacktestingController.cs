@@ -52,5 +52,22 @@ namespace Dashboard.Application.Slice.Backtesting
             return Ok(result);
         }
 
+        [HttpGet("getDistinctTickers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDistinctTickers()
+        {
+            var sp = new Stopwatch();
+            sp.Restart();
+            var result = await _backtestingService.GetDistinctTickers();
+            sp.Stop();
+            Console.WriteLine($"Elapsed Time GetDistinctTickers: {sp.Elapsed.Milliseconds}");
+            return Ok(result);
+        }
+
+
     }
 }

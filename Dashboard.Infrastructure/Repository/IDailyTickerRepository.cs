@@ -4,4 +4,5 @@
     Task<DateTime?> GetLatestDateAsync(string symbol);
     Task<bool> TickerExistsAsync(string symbol);
     Task UpsertDailyTickersAsync(IEnumerable<DailyTickerSummary> tickers);
+    Task<IEnumerable<string>> GetDistinctSymbolsAsync();
 }

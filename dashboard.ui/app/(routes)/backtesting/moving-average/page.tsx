@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Snackbar, Alert } from "@mui/material";
 import {
   SciChartSurface,
   NumericAxis,
@@ -15,10 +15,7 @@ import {
   XAxisDragModifier,
   YAxisDragModifier,
   NumberRange,
-  CursorModifier,
-  EXyDirection,
   RolloverModifier,
-  SplineLineRenderableSeries,
 } from "scichart";
 import {
   useMovingAverageData,
@@ -26,6 +23,7 @@ import {
 } from "../../../_redux/hooks";
 import { useAppDispatch } from "../../../_redux/hooks";
 import { runBacktest } from "../../../_redux/slices/backtesting/moving-average/slice";
+import { backtestingApi } from "../../../_shared/api/backtesting";
 
 SciChartSurface.configure({ wasmUrl: "/scichart2d.wasm" });
 
@@ -37,13 +35,21 @@ export default function MovingAveragePage() {
   const rawData = useMovingAverageData();
   const status = useMovingAverageStatus();
 
-  const [symbol, setSymbol] = useState("");
+  const [symbol, setSymbol] = useState("AAPL");
   const [shortPeriod, setShortPeriod] = useState<number>(10);
   const [longPeriod, setLongPeriod] = useState<number>(50);
+  const [tickers, setTickers] = useState<string[]>([]);
+  const [toastOpen, setToastOpen] = useState(false);
 
   const handleRun = () => {
     if (!symbol) return;
     dispatch(runBacktest({ symbol, shortPeriod, longPeriod }));
+  };
+
+  const handleShowTickers = async () => {
+    const result = await backtestingApi.getDistinctTickers();
+    setTickers(result);
+    setToastOpen(true);
   };
 
   useEffect(() => {
@@ -67,7 +73,7 @@ export default function MovingAveragePage() {
         autoRange: EAutoRange.Never,
         growBy: new NumberRange(0.1, 0.1),
       });
-      
+
       sciChartSurface.xAxes.add(xAxis);
       sciChartSurface.yAxes.add(
         new NumericAxis(wasmContext, {
@@ -76,8 +82,7 @@ export default function MovingAveragePage() {
         }),
       );
 
-      const sorted = [...rawData]
-        .sort((a, b) => a.date - b.date);
+      const sorted = [...rawData].sort((a, b) => a.date - b.date);
 
       const xValuesClose = sorted.map((p) => p.date);
       const yValuesClose = sorted.map((p) => p.close);
@@ -95,7 +100,6 @@ export default function MovingAveragePage() {
       const xValuesLongMa = sorted
         .filter((p) => p.maLongPeriod != null)
         .map((p) => p.date!);
-
 
       sciChartSurface.renderableSeries.add(
         new FastLineRenderableSeries(wasmContext, {
@@ -202,8 +206,25 @@ export default function MovingAveragePage() {
         >
           {status === "loading" ? "Running..." : "Run"}
         </Button>
+        <Button variant="outlined" onClick={handleShowTickers}>
+          Available Tickers
+        </Button>
       </div>
       <div ref={chartRef} style={{ width: "100%", position: "relative" }} />
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={6000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          <strong>Available Tickers:</strong> {tickers.join(", ")}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
