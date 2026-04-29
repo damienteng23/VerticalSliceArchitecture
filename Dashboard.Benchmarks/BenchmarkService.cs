@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 namespace Dashboard.Benchmarks
 {
     [MemoryDiagnoser]
-    [SimpleJob(warmupCount: 3, iterationCount: 5)]
     public class BenchmarkService
     {
         private IBacktestingService _backtestingService;
