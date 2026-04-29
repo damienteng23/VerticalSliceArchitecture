@@ -67,7 +67,5 @@ namespace Dashboard.Application.Slice.Backtesting
             Console.WriteLine($"Elapsed Time GetDistinctTickers: {sp.Elapsed.Milliseconds}");
             return Ok(result);
         }
-
-
     }
 }
