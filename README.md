@@ -1,6 +1,8 @@
 
 # Quantitative Dashboard
 
+🔗 **Live demo:** [vertical-slice-architecture.vercel.app/backtesting/moving-average](https://vertical-slice-architecture.vercel.app/backtesting/moving-average)
+
 ## Table of Content
 
 - [Overview](#overview)
@@ -44,7 +46,7 @@ VerticalSliceArchitecture/
 
 ## Current Status
 
-The frontend and backend are not currently hosted together. The backend (`Dashboard.Application`) requires a SQL Server instance and a Polygon.io API key, which isn't practical to stand up alongside a hosted frontend demo.
+The frontend is hosted on Vercel at [vertical-slice-architecture.vercel.app/backtesting/moving-average](https://vertical-slice-architecture.vercel.app/backtesting/moving-average), but the frontend and backend are not currently hosted together. The backend (`Dashboard.Application`) requires a SQL Server instance and a Polygon.io API key, which isn't practical to stand up alongside a hosted frontend demo.
 
 To keep the UI usable standalone, `dashboard.ui` ships its own Next.js API routes (`app/api/backtesting/*`) that read from a bundled CSV snapshot of daily ticker data (`app/_shared/dailyTickerSummary.csv`) and compute the moving-average backtest in-browser/server-side, instead of calling the .NET API. This means the hosted UI works out of the box, but reflects a fixed data snapshot rather than live/refreshable data.
 
