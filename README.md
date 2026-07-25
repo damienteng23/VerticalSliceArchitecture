@@ -1,5 +1,5 @@
 
-# Quantitative Dashboard
+# Backtesting Dashboard
 
 🔗 **Live demo:** [vertical-slice-architecture.vercel.app/backtesting/moving-average](https://vertical-slice-architecture.vercel.app/backtesting/moving-average)
 
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Dashboard is a full-stack quantitative finance tool for exploring trading strategies against historical market data. It pairs a .NET backend built with Vertical Slice Architecture (VSA) with a Next.js frontend, and currently ships a moving-average crossover backtester.
+Dashboard is a full-stack finance tool for exploring trading strategies against historical market data. It pairs a .NET backend built with Vertical Slice Architecture (VSA) with a Next.js frontend, and currently ships a moving-average crossover backtester.
 
 The project combines:
 - **Quant Fundamentals**: Backtests strategies (e.g. moving-average crossovers) against historical daily ticker data.
