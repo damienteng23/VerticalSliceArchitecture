@@ -5,77 +5,71 @@
 
 - [Overview](#overview)
 - [Architecture](#architecture)
+- [Current Status](#current-status)
 - [Installation](#installation)
 
 ## Overview
 
-Dashboard is a cross‑platform desktop client built with .NET and Avalonia UI from scratch that demonstrates option pricing and risk analysis in an interactive environment. The application serves as both a learning tool and a portfolio project, designed to highlight expertise in quantitative finance, numerical methods, and modern UI development.
+Dashboard is a full-stack quantitative finance tool for exploring trading strategies against historical market data. It pairs a .NET backend built with Vertical Slice Architecture (VSA) with a Next.js frontend, and currently ships a moving-average crossover backtester.
 
 The project combines:
-- Quant Finance Fundamentals: Implements classical models such as Black‑Scholes, Binomial Trees, and Monte Carlo simulations to calculate option prices and risk metrics.
-- Numerical Methods: Showcases practical applications of stochastic modeling, iterative algorithms, and sensitivity analysis.
-- Visualization Skills: Provides real‑time charting of option Greeks (Delta, Gamma, Vega, Theta, Rho) and scenario analysis tools (e.g., volatility shocks) to make risk dynamics visually intuitive.
-- Software Engineering Practices: Built with a Vertical Slice Architecture (VSA) for clean separation of features, testability, and scalability, reflecting enterprise‑ready design principles.
-By integrating financial models with a responsive desktop UI, Dashboard demonstrates how technical engineering skills and quantitative reasoning can be combined to produce tools that are both analytically rigorous and user‑friendly. This project is intended to serve as a showcase of applied knowledge in quantitative finance, numerical computation, and enterprise‑grade C# development.
-
+- **Quant Fundamentals**: Backtests strategies (e.g. moving-average crossovers) against historical daily ticker data.
+- **External Data Integration**: Pulls and persists historical ticker data from the [Polygon.io](https://polygon.io) API.
+- **Visualization**: Interactive, zoomable price/strategy charts built with [SciChart](https://www.scichart.com/) and Redux-managed state.
+- **Software Engineering Practices**: Built with Vertical Slice Architecture (VSA) for clean separation of features, testability, and scalability.
 
 ## Architecture
+
 ```
-Dashboard/
- ├── Dashboard.UI/                     # Avalonia UI project
- │    ├── Views/                       # XAML views (OptionInputView, RiskDashboardView)
- │    ├── ViewModels/                  # MVVM bindings per slice
- │    └── Assets/                      # Styles, icons
+VerticalSliceArchitecture/
+ ├── dashboard.ui/                      # Next.js frontend (React, MUI, Redux, SciChart)
+ │    ├── app/(routes)/                 # Pages (backtesting/moving-average, notes)
+ │    ├── app/api/                      # Next.js API routes
+ │    ├── app/_redux/                   # Redux slices & store
+ │    └── app/_shared/                  # Shared API clients, types, and local data
  │
- ├── Dashboard.Application/            # Vertical slices (features)
- │    ├── Pricing/
- │    │    ├── feature1/
- │    │    │    ├── feature1Command.cs
- │    │    │    ├── feature1Handler.cs
- │    │    │    ├── feature1Validator.cs
- │    │    │    ├── feature1ResultDto.cs
- │    │    │    └── feature1Tests.cs
- │    │    └── feature2/
- │    │         ├── feature2Command.cs
- │    │         ├── feature2Handler.cs
- │    │         └── feature2Tests.cs
- │    ├── Greeks/
- │    │    ├── CalculateGreeksCommand.cs
- │    │    ├── CalculateGreeksHandler.cs
- │    │    ├── GreeksDto.cs
- │    │    └── GreeksChartViewModel.cs
- │    │
- │    └── Shared/
- │         ├── Result.cs                # Standardized result wrapper
- │         ├── Exceptions.cs
- │         └── Interfaces.cs
+ ├── Dashboard.Application/             # ASP.NET Core Web API + vertical slices (features)
+ │    └── Slice/
+ │         ├── Backtesting/             # BacktestingController, BacktestingService
+ │         └── ExternalData/            # Polygon.io ingestion (ExternalDataService)
  │
- ├── Dashboard.Infrastructure/          # Data & external services
- │    ├── Persistence/
- │    │    ├── MarketDataDbContext.cs   # EF Core or repository
- │    │    ├── Configurations/
- │    │    └── Migrations/
- │    ├── Services/
- │    │    ├── MarketDataApiClient.cs   # External API for live prices
- │    │    └── LoggingService.cs
- │    └── Repositories/
- │         └── OptionRepository.cs
+ ├── Dashboard.Infrastructure/          # EF Core DbContext, entity configurations, repositories
  │
- ├── Dashboard.Domain/                 # Core domain models
- │    ├── Entities/
- │    │    ├── Option.cs
- │    │    ├── Portfolio.cs
- │    │    └── RiskMetrics.cs
- │    ├── ValueObjects/
- │    │    ├── Strike.cs
- │    │    ├── Expiry.cs
- │    │    └── Volatility.cs
- │    └── Events/
- │         └── PricingCalculatedEvent.cs
+ ├── Dashboard.Domain/                  # Core domain entities, value objects, events, exceptions
  │
- └── tests/
-      ├── Dashboard.UnitTests/
-      └── Dashboard.IntegrationTests/
+ ├── Dashboard.Tests/                   # Backend unit/integration tests
+ │
+ └── Dashboard.Benchmarks/              # BenchmarkDotNet performance benchmarks
 ```
 
-# Installation
+## Current Status
+
+The frontend and backend are not currently hosted together. The backend (`Dashboard.Application`) requires a SQL Server instance and a Polygon.io API key, which isn't practical to stand up alongside a hosted frontend demo.
+
+To keep the UI usable standalone, `dashboard.ui` ships its own Next.js API routes (`app/api/backtesting/*`) that read from a bundled CSV snapshot of daily ticker data (`app/_shared/dailyTickerSummary.csv`) and compute the moving-average backtest in-browser/server-side, instead of calling the .NET API. This means the hosted UI works out of the box, but reflects a fixed data snapshot rather than live/refreshable data.
+
+To run against the real backend (live data ingestion, SQL Server persistence, etc.), point `NEXT_PUBLIC_API_URL` at a locally running instance of `Dashboard.Application` — see [Installation](#installation).
+
+## Installation
+
+### Backend (`Dashboard.Application`)
+
+1. Provision a SQL Server instance and set the `DashboardDb` connection string in `Dashboard.Application/appsettings.Development.json`.
+2. Add a Polygon.io API key for external data ingestion.
+3. From the repo root: `dotnet run --project Dashboard.Application`.
+
+### Frontend (`dashboard.ui`)
+
+```bash
+cd dashboard.ui
+npm install
+npm run dev
+```
+
+By default the UI runs standalone against the bundled CSV snapshot. To point it at a local backend instead, set:
+
+```
+NEXT_PUBLIC_API_URL=https://localhost:7212
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the app.
