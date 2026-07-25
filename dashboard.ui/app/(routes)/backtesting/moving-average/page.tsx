@@ -9,6 +9,8 @@ import {
   XyDataSeries,
   FastLineRenderableSeries,
   LegendModifier,
+  ELegendPlacement,
+  ELegendOrientation,
   EAutoRange,
   MouseWheelZoomModifier,
   ZoomPanModifier,
@@ -16,6 +18,7 @@ import {
   YAxisDragModifier,
   NumberRange,
   RolloverModifier,
+  Thickness,
 } from "scichart";
 import {
   useMovingAverageData,
@@ -68,6 +71,10 @@ export default function MovingAveragePage() {
         chartRef.current,
       );
       surface = sciChartSurface;
+
+      // Reserve room inside the canvas so right-side axis labels aren't clipped;
+      // CSS padding on the wrapper div doesn't affect SciChart's internal layout.
+      sciChartSurface.padding = new Thickness(10, 30, 10, 10);
 
       const xAxis = new DateTimeNumericAxis(wasmContext, {
         autoRange: EAutoRange.Never,
@@ -144,7 +151,14 @@ export default function MovingAveragePage() {
         }),
       );
 
-      sciChartSurface.chartModifiers.add(new LegendModifier());
+      sciChartSurface.chartModifiers.add(
+        new LegendModifier({
+          placement: ELegendPlacement.BottomRight,
+          orientation: ELegendOrientation.Horizontal,
+          showLegend: true,
+          margin: 12,
+        }),
+      );
       sciChartSurface.chartModifiers.add(new MouseWheelZoomModifier());
       sciChartSurface.chartModifiers.add(new ZoomPanModifier());
       sciChartSurface.chartModifiers.add(new XAxisDragModifier());
@@ -210,7 +224,17 @@ export default function MovingAveragePage() {
           Available Tickers
         </Button>
       </div>
-      <div ref={chartRef} style={{ width: "100%", position: "relative" }} />
+      <div
+        ref={chartRef}
+        style={{
+          width: "100%",
+          height: "calc(100vh - 260px)",
+          minHeight: 450,
+          maxHeight: 800,
+          boxSizing: "border-box",
+          position: "relative",
+        }}
+      />
       <Snackbar
         open={toastOpen}
         autoHideDuration={6000}
