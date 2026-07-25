@@ -64,8 +64,8 @@ To run against the real backend (live data ingestion, SQL Server persistence, et
 
 ```bash
 cd dashboard.ui
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 By default the UI runs standalone against the bundled CSV snapshot. To point it at a local backend instead, set:
