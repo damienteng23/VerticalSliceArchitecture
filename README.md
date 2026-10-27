@@ -1,4 +1,3 @@
-
 # Backtesting Dashboard
 
 🔗 **Live demo:** [vertical-slice-architecture.vercel.app/backtesting/moving-average](https://vertical-slice-architecture.vercel.app/backtesting/moving-average)
@@ -15,6 +14,7 @@
 Dashboard is a full-stack finance tool for exploring trading strategies against historical market data. It pairs a .NET backend built with Vertical Slice Architecture (VSA) with a Next.js frontend, and currently ships a moving-average crossover backtester.
 
 The project combines:
+
 - **Quant Fundamentals**: Backtests strategies (e.g. moving-average crossovers) against historical daily ticker data.
 - **External Data Integration**: Pulls and persists historical ticker data from the [Polygon.io](https://polygon.io) API.
 - **Visualization**: Interactive, zoomable price/strategy charts built with [SciChart](https://www.scichart.com/) and Redux-managed state.
